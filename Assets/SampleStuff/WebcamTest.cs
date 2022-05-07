@@ -11,6 +11,10 @@ sealed class WebcamTest : MonoBehaviour
     [SerializeField] UI.RawImage _webcamPreview = null;
     [SerializeField] UI.Text _debugText = null;
 
+    
+    public float xshift = 0;
+    public float yshift = 0;
+    
     // Webcam input and buffer
     WebCamTexture _webcamRaw;
     RenderTexture _webcamBuffer;
@@ -19,6 +23,8 @@ sealed class WebcamTest : MonoBehaviour
     // AprilTag detector and drawer
     AprilTag.TagDetector _detector;
     TagDrawer _drawer;
+
+    public Camera cam;
 
     void Start()
     {
@@ -63,9 +69,14 @@ sealed class WebcamTest : MonoBehaviour
 
         // Detected tag visualization
         foreach (var tag in _detector.DetectedTags)
+        {
             _drawer.Draw(tag.ID, tag.Position, tag.Rotation, _tagSize);
+            
+            Debug.Log(tag.Position);
+        }
+            
 
-        // Profile data output (with 30 frame interval)
+        //Profile data output (with 30 frame interval)
         if (Time.frameCount % 30 == 0)
             _debugText.text = _detector.ProfileData.Aggregate
               ("Profile (usec)", (c, n) => $"{c}\n{n.name} : {n.time}");

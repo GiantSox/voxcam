@@ -2,7 +2,7 @@ using UnityEngine;
 
 sealed class TagDrawer : System.IDisposable
 {
-    Mesh _mesh;
+    public Mesh _mesh;
     Material _sharedMaterial;
 
     public TagDrawer(Material material)
