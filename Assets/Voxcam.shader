@@ -38,8 +38,15 @@ Shader "Voxcam/Voxcam"
             }
 
             sampler2D _MainTex;
-            float centerX;
-            float centerY;
+            float _centerX;
+            float _centerY;
+            float _zoomAmount;
+
+            float boundaryCheck(float2 uv)
+            {
+                return 0 < uv.x && uv.x < 1 &&
+                    0 < uv.y && uv.y < 1;
+            }
 
             fixed4 frag (v2f i) : SV_Target
             {
@@ -48,11 +55,17 @@ Shader "Voxcam/Voxcam"
 
                 //uv += (float2(centerX, centerY) - 0.5); //Remap center to centerX centerY
                 //uv /= 1.5;
+                float2 tagCenter = float2(_centerX, _centerY);
+                tagCenter -= 0.5f;
+
+                uv *= _zoomAmount;
+                uv += tagCenter;
 
                 uv += 0.5;
-                uv -= 0.5 - float2(centerX, centerY);
+                //uv -= 0.5 - float2(centerX, centerY);
                 
                 fixed4 col = tex2D(_MainTex, uv);
+                col *= boundaryCheck(uv);
 
                 /*float dist = distance(uv, float2(centerX, centerY));
                 if(dist < 0.1)
